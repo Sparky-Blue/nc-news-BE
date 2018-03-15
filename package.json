@@ -4,7 +4,7 @@
   "description": "Northcoders News API Sprint",
   "main": "index.js",
   "scripts": {
-    "test": "node ./seed/seed.test && mocha spec",
+    "test": "NODE_ENV='test' node ./seed/seed && mocha spec",
     "start": "node listen.js",
     "dev": "nodemon listen.js"
   },
@@ -14,6 +14,7 @@
     "async": "^2.1.4",
     "body-parser": "^1.18.2",
     "csvtojson": "^1.1.9",
+    "ejs": "^2.5.7",
     "express": "^4.16.3",
     "mongoose": "^4.13.12"
   },

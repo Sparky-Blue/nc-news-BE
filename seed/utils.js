@@ -1,19 +1,51 @@
-const DB_URL = "mongodb://localhost:27017/nc_news_test";
-const models = require("../models/models");
-const mongoose = require("mongoose");
+const faker = require("faker");
 const { Articles, Comments, Topics, Users } = require("../models/models");
 const parse = require("csv-parse");
 const Promise = require("bluebird");
 const fs = Promise.promisifyAll(require("fs"));
 const { promisify } = require("util");
 const Promiseparse = promisify(parse);
-const commentGenerator = require("./data/comments");
+
+function generateComments() {
+  return faker.hacker.phrase();
+}
+
+// function parseCSVfile(file) {
+//   return fs
+//     .readFileAsync(file)
+//     .then(data => Promiseparse(data, { columns: true }))
+//     .then(data => data)
+//     .catch(err => console.log({ err }));
+// }
 
 function parseCSVfile(file) {
   return fs
-    .readFileAsync(file)
-    .then(data => Promiseparse(data, { columns: true }))
-    .then(data => data)
+    .readFileAsync(file, "utf8")
+    .then(data => {
+      let keys,
+        noOfKeys,
+        valueArray = [];
+      const lines = data.split("\n");
+      lines.forEach((line, index) => {
+        if (index === 0) {
+          keys = line
+            .replace(/"([^"]+)"(,|$)/g, "$1 ")
+            .trim()
+            .split(" ");
+          noOfKeys = keys.length;
+        } else {
+          let obj = {};
+          line.split('","').forEach((value, i) => {
+            if (i % noOfKeys === 0) {
+              obj = {};
+            }
+            obj[keys[i % noOfKeys]] = value.replace(/"/, "");
+          });
+          valueArray.push(obj);
+        }
+      });
+      return valueArray;
+    })
     .catch(err => console.log({ err }));
 }
 
@@ -64,7 +96,7 @@ function seedComments(userIds, articleIds) {
     const randomUser = Math.floor(Math.random() * userIds.length);
     const randomArticle = Math.floor(Math.random() * articleIds.length);
     const com = {
-      body: commentGenerator(),
+      body: generateComments(),
       created_by: userIds[randomUser].id,
       belongs_to: articleIds[randomArticle]
     };
@@ -79,42 +111,10 @@ function seedComments(userIds, articleIds) {
   return Promise.all(comments).then(() => ids);
 }
 
-// This should seed your development database using the CSV file data
-// Feel free to use the async library, or native Promises, to handle the asynchronicity of the seeding operations.
-
-function seedDatabase() {
-  mongoose
-    .connect(DB_URL)
-    .then(() => {
-      console.log("Connected to mongoDB");
-      return mongoose.connection.db.dropDatabase();
-    })
-    .catch(err => {
-      if (err.code === 26) console.log("collection does not exist");
-    })
-    .then(() => {
-      return seedTopics();
-    })
-    .then(topicIds => {
-      console.log("topics collection created");
-      return Promise.all([seedUsers(), topicIds]);
-    })
-    .then(([userIds, topicIds]) => {
-      console.log("users collection created");
-      return Promise.all([seedArticles(topicIds, userIds), userIds]);
-    })
-    .then(([articleIds, userIds]) => {
-      console.log("articles collection created");
-      return seedComments(userIds, articleIds);
-    })
-    .then(commentIds => {
-      console.log("comments collection created");
-    })
-    .then(() => {
-      mongoose.disconnect();
-      console.log("disconnected");
-    })
-    .catch(err => console.log({ err }));
-}
-
-seedDatabase();
+module.exports = {
+  generateComments,
+  seedArticles,
+  seedComments,
+  seedUsers,
+  seedTopics
+};

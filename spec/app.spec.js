@@ -5,16 +5,14 @@ const { expect } = require("chai");
 const mongoose = require("mongoose");
 
 describe("/api", () => {
-  // it("GET renders html page with end points", () => {
-  //   return request
-  //     .get("/api")
-  //     .expect(200)
-  //     .then(res => {
-  //       expect(res.body).to.be.an("object");
-  //       expect(res.body.topics).to.be.an("array");
-  //       //expect(res.body.topics).to.include("cooking");
-  //     });
-  // });
+  it("GET renders html page with end points", () => {
+    return request
+      .get("/api")
+      .expect(200)
+      .then(res => {
+        expect(res.body).to.be.an("object");
+      });
+  });
   describe("/topics", () => {
     it("GET returns status 200 and an object", () => {
       return request
@@ -23,7 +21,8 @@ describe("/api", () => {
         .then(res => {
           expect(res.body).to.be.an("object");
           expect(res.body.topics).to.be.an("array");
-          //expect(res.body.topics).to.include("cooking");
+          const slugList = res.body.topics.map(topic => topic.slug);
+          expect(slugList).to.have.members(["cooking", "football", "coding"]);
         });
     });
   });
