@@ -1,4 +1,4 @@
-const DB_URL = "mongodb://localhost:27017/nc_news_dev";
+const DB_URL = "mongodb://localhost:27017/nc_news_test";
 const models = require("../models/models");
 const mongoose = require("mongoose");
 const { Articles, Comments, Topics, Users } = require("../models/models");
@@ -70,7 +70,6 @@ function seedComments(userIds, articleIds) {
     };
     commentsArr.push(com);
   }
-  console.log(commentsArr);
   const comments = commentsArr.map(comment => {
     return new Comments(comment).save().then(commentDoc => {
       ids.push(commentDoc._id);
