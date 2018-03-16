@@ -18,9 +18,9 @@ function generateComments() {
 //     .catch(err => console.log({ err }));
 // }
 
-function parseCSVfile(file) {
+function parseCSVfile(filePath) {
   return fs
-    .readFileAsync(file, "utf8")
+    .readFileAsync(filePath, "utf8")
     .then(data => {
       let keys,
         noOfKeys,
@@ -35,11 +35,11 @@ function parseCSVfile(file) {
           noOfKeys = keys.length;
         } else {
           let obj = {};
-          line.split('","').forEach((value, i) => {
+          line.match(/(("([^"]+)")|(\w+))(?=(,|$))/g).forEach((value, i) => {
             if (i % noOfKeys === 0) {
               obj = {};
             }
-            obj[keys[i % noOfKeys]] = value.replace(/"/, "");
+            obj[keys[i % noOfKeys]] = JSON.parse(value);
           });
           valueArray.push(obj);
         }
