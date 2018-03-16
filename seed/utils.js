@@ -49,8 +49,7 @@ function parseCSVfile(filePath) {
     .catch(err => console.log({ err }));
 }
 
-function seedTopics() {
-  const file = __dirname + "/data/topics.csv";
+function seedTopics(file) {
   const ids = {};
   const topics = parseCSVfile(file).map(topic =>
     new Topics(topic).save().then(topicDoc => {
@@ -61,8 +60,7 @@ function seedTopics() {
   return Promise.all(topics).then(() => ids);
 }
 
-function seedUsers() {
-  const file = __dirname + "/data/users.csv";
+function seedUsers(file) {
   const ids = [];
   const users = parseCSVfile(file).map(user => {
     return new Users(user).save().then(userDoc => {
@@ -75,9 +73,8 @@ function seedUsers() {
   return Promise.all(users).then(() => ids);
 }
 
-function seedArticles(topicIds, userIds) {
+function seedArticles(file, topicIds, userIds) {
   const ids = [];
-  const file = __dirname + "/data/articles.csv";
   const articles = parseCSVfile(file).map(article => {
     article.belongs_to = topicIds[article.topic];
     const randomUser = Math.floor(Math.random() * userIds.length);
@@ -95,10 +92,12 @@ function seedComments(userIds, articleIds) {
   for (let n = 100; n >= 0; n--) {
     const randomUser = Math.floor(Math.random() * userIds.length);
     const randomArticle = Math.floor(Math.random() * articleIds.length);
+    const randomVotes = Math.floor(Math.random() * 100);
     const com = {
       body: generateComments(),
       created_by: userIds[randomUser].id,
-      belongs_to: articleIds[randomArticle]
+      belongs_to: articleIds[randomArticle],
+      votes: randomVotes
     };
     commentsArr.push(com);
   }

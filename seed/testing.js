@@ -7,27 +7,43 @@ function parseCSVfile(file) {
   return fs
     .readFileAsync(file, "utf8")
     .then(data => {
-      let keys,
-        noOfKeys,
-        valueArray = [];
+      // let keys,
+      //   noOfKeys,
+      //   valueArray = [];
       const lines = data.split("\n");
-      lines.forEach((line, index) => {
-        if (index === 0) {
-          keys = line
-            .replace(/"([^"]+)"(,|$)/g, "$1 ")
-            .trim()
-            .split(" ");
-          noOfKeys = keys.length;
-        } else {
-          let obj = {};
-          line.match(/(("([^"]+)")|(\w+))(?=(,|$))/g).forEach((value, i) => {
-            if (i % noOfKeys === 0) {
-              obj = {};
-            }
-            obj[keys[i % noOfKeys]] = JSON.parse(value);
-          });
-          valueArray.push(obj);
-        }
+      const [keyString, valueStrings] = data.split("\n");
+      // console.log(keyStrings, valueStrings);
+      // const keys = keyString.split(",");
+      // valueStrings.map(valueString => {
+      //   valueString.split(",").reduce((acc, value) => {
+      //     acc[keys[i]] = value;
+      //     return acc;
+      //   }, {});
+        // });
+        // lines.forEach((line, index) => {
+        //   if (index === 0) {
+        //     keys = line
+        //       .replace(/"([^"]+)"(,|$)/g, "$1 ")
+        //       .trim()
+        //       .split(" ");
+        //     noOfKeys = keys.length;
+        //   } else {
+        //     let obj = {};
+        // const newObj = line
+        //   .match(/(("([^"]+)")|(\w+))(?=(,|$))/g)
+        //   .reduce((acc, value) => {
+        //     acc[keys[i]] = value;
+        //     return acc;
+        //   }, {});
+
+        // .forEach((value, i) => {
+        //       if (i % noOfKeys === 0) {
+        //         obj = {};
+        //       }
+        //       obj[keys[i % noOfKeys]] = JSON.parse(value);
+        //     });
+        // valueArray.push(newObj);
+        // }
       });
       return valueArray;
     })

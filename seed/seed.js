@@ -1,5 +1,5 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-const DB_URL = require("../config/index").DB_URL[process.env.NODE_ENV];
+const DB = require("../config/index").DB_URL[process.env.NODE_ENV];
 const mongoose = require("mongoose");
 const {
   seedArticles,
@@ -8,7 +8,7 @@ const {
   seedUsers
 } = require("./utils");
 
-function seedDatabase() {
+function seedDatabase(DB_URL) {
   mongoose
     .connect(DB_URL)
     .then(() => {
@@ -19,15 +19,18 @@ function seedDatabase() {
       if (err.code === 26) console.log("collection does not exist");
     })
     .then(() => {
-      return seedTopics();
+      return seedTopics("seed/data/topics.csv");
     })
     .then(topicIds => {
       console.log("topics collection created");
-      return Promise.all([seedUsers(), topicIds]);
+      return Promise.all([seedUsers("seed/data/users.csv"), topicIds]);
     })
     .then(([userIds, topicIds]) => {
       console.log("users collection created");
-      return Promise.all([seedArticles(topicIds, userIds), userIds]);
+      return Promise.all([
+        seedArticles("seed/data/articles.csv", topicIds, userIds),
+        userIds
+      ]);
     })
     .then(([articleIds, userIds]) => {
       console.log("articles collection created");
@@ -43,4 +46,4 @@ function seedDatabase() {
     .catch(err => console.log({ err }));
 }
 
-seedDatabase();
+seedDatabase(DB);

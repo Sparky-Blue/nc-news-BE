@@ -4,7 +4,7 @@
   "description": "Northcoders News API Sprint",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV='test' node ./seed/seed && mocha spec",
+    "test": "mocha spec",
     "start": "node listen.js",
     "dev": "nodemon listen.js"
   },

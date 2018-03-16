@@ -4,9 +4,8 @@ const topicsRouter = require("./topics");
 const articlesRouter = require("./articles");
 const commentsRouter = require("./comments");
 const usersRouter = require("./users");
-const { getEndPointDocumentation } = require("../controllers/api");
 
-router.route("/").get(getEndPointDocumentation);
+router.use(express.static("public"));
 router.use("/topics", topicsRouter);
 router.use("/articles", articlesRouter);
 router.use("/comments", commentsRouter);
