@@ -1,6 +1,9 @@
 process.env.NODE_ENV = "test";
 const mongoose = require("mongoose");
-const DB = require("../config/index").DB_URL[process.env.NODE_ENV];
+const DB =
+  process.env.NODE_ENV === "production"
+    ? process.env.DB_URL
+    : require("./config/index").DB_URL[process.env.NODE_ENV];
 const saveTestData = require("../seed/test.seed.js");
 const app = require("../app");
 const request = require("supertest")(app);
