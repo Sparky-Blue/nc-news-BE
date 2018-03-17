@@ -20,6 +20,11 @@
   <p>Get all the topics</p>
   <h3>
     <a></a>GET
+    <code>/api/topics/:topic_id/articles</code>
+  </h3>
+  <p>or</p>
+  <h3>
+    <a></a>GET
     <code>/api/topics/:topic/articles</code>
   </h3>
   <p>Return all the articles for a certain topic</p>
@@ -41,7 +46,7 @@
     <code>body</code> with a
     <code>comment</code> key and value pair
     <br> e.g:
-    <code>{"comment": "This is my new comment"}</code>
+    <code>{"comment": "This is my new comment"}</code> and a username query
   </p>
   <h3>
     <a></a>PUT
@@ -65,17 +70,12 @@
     <a></a>DELETE
     <code>/api/comments/:comment_id</code>
   </h3>
-  <p>Deletes a comment if the comment was created by the Northcoder user</p>
+  <p>Deletes a comment</p>
   <h3>
     <a></a>GET
     <code>/api/users/:username</code>
   </h3>
   <p>Returns a JSON object with the profile data for the specified user.</p>
-  <h3>
-    <a></a>GET
-    <code>/api/users/:username/repos</code>
-  </h3>
-  <p>Returns a JSON array with all the public repos of the specified user.</p>
 </body>
 
 </html>
