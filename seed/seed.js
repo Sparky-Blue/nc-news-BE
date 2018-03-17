@@ -2,7 +2,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const DB =
   process.env.NODE_ENV === "production"
     ? process.env.DB_URL
-    : require("./config/index").DB_URL[process.env.NODE_ENV];
+    : require("../config/index").DB_URL[process.env.NODE_ENV];
 const mongoose = require("mongoose");
 const {
   seedArticles,
@@ -10,6 +10,8 @@ const {
   seedTopics,
   seedUsers
 } = require("./utils");
+
+console.log(DB);
 
 function seedDatabase(DB_URL) {
   mongoose

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha spec",
     "start": "node listen.js",
-    "dev": "nodemon listen.js"
+    "dev": "nodemon listen.js",
+    "mlab": "NODE_ENV=production node seed/seed.js"
   },
   "author": "",
   "license": "ISC",

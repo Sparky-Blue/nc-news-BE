@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { getAllArticles, changeVote } = require("../controllers/articles");
 const {
-  getAllArticles,
   getCommentsForArticle,
-  addCommentToArticle,
-  changeVote
-} = require("../controllers/articles");
+  addCommentToArticle
+} = require("../controllers/comments");
 
 router.route("/").get(getAllArticles);
 

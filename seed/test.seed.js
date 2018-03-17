@@ -2,7 +2,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "test";
 const DB =
   process.env.NODE_ENV === "production"
     ? process.env.DB_URL
-    : require("./config/index").DB_URL[process.env.NODE_ENV];
+    : require("../config/index").DB_URL[process.env.NODE_ENV];
 const mongoose = require("mongoose");
 const {
   seedArticles,
@@ -19,15 +19,12 @@ function seedTestDatabase(DB_URL) {
       return mongoose.connection.db.dropDatabase();
     })
     .then(() => {
-      console.log("collections dropped");
       return seedTopics("seed/testData/topics_test.csv");
     })
     .then(topicIds => {
-      console.log("topics collection created");
       return Promise.all([seedUsers("seed/testData/users_test.csv"), topicIds]);
     })
     .then(([userIds, topicIds]) => {
-      console.log("users collection created");
       return Promise.all([
         seedArticles("seed/testData/articles_test.csv", topicIds, userIds),
         userIds,
@@ -35,7 +32,6 @@ function seedTestDatabase(DB_URL) {
       ]);
     })
     .then(([articleIds, userIds, topicIds]) => {
-      console.log("articles collection created");
       return Promise.all([
         articleIds,
         userIds,
