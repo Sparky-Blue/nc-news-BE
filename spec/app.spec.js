@@ -149,7 +149,7 @@ describe("/api", () => {
     });
   });
 
-  describe("/comments", () => {
+  describe("/comments/:comment_id", () => {
     it("DELETE returns status 200 and returns a deleteWriteOpResult object with ok = 1 and n = 1", () => {
       return request
         .delete(`/api/comments/${commentIdsT[0]}`)

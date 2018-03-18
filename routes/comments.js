@@ -7,7 +7,7 @@ const {
 } = require("../controllers/comments");
 
 router
-  .route("/:comments_id")
+  .route("/:comment_id")
   .delete(deleteComment)
   .get(findCommentById)
   .put(addCommentVote);

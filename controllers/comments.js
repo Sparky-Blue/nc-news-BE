@@ -30,7 +30,7 @@ function addCommentToArticle(req, res, next) {
 }
 
 function deleteComment(req, res, next) {
-  return Comments.deleteOne({ _id: req.params.comments_id })
+  return Comments.deleteOne({ _id: req.params.comment_id })
     .then(deleteResult => res.send({ deleteResult }))
     .catch(next);
 }
@@ -38,14 +38,14 @@ function deleteComment(req, res, next) {
 function addCommentVote(req, res, next) {
   const { vote } = req.query;
   if (vote === "up" || vote === "down") {
-    return changeVote(Comments, req.params.comments_id, vote)
+    return changeVote(Comments, req.params.comment_id, vote)
       .then(comment => res.status(200).send({ comment }))
       .catch(next);
   } else return next({ msg: "please vote up or down" });
 }
 
 function findCommentById(req, res, next) {
-  return Comments.findById(req.params.comments_id)
+  return Comments.findById(req.params.comment_id)
     .then(comment => {
       res.send({ comment });
     })
