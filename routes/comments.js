@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { deleteComment, findCommentById } = require("../controllers/comments");
+const {
+  deleteComment,
+  findCommentById,
+  addCommentVote
+} = require("../controllers/comments");
 
 router
   .route("/:comments_id")
   .delete(deleteComment)
-  .get(findCommentById);
+  .get(findCommentById)
+  .put(addCommentVote);
 
 module.exports = router;

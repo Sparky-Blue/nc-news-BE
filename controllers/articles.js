@@ -1,22 +1,21 @@
 const { Topics, Articles, Comments, Users } = require("../models/models");
+const { changeVote } = require("./utils");
 
 function getAllArticles(req, res, next) {
   Articles.find()
     .populate("belongs_to", "title -_id")
-    .populate({ path: "created_by", select: "username -_id" })
+    .populate("created_by", "username -_id")
     .then(articles => res.send({ articles }))
     .catch(next);
 }
 
-function changeVote(req, res, next) {
-  const { article_id } = req.params;
-  const vote = req.query.vote === "up" ? 1 : -1;
-  return Articles.findOneAndUpdate(
-    { _id: article_id },
-    { $inc: { votes: vote } }
-  )
-    .then(article => res.status(200).send({ article }))
-    .catch(next);
+function addArticleVote(req, res, next) {
+  const { vote } = req.query;
+  if (vote === "up" || vote === "down") {
+    return changeVote(Articles, req.params.article_id, vote)
+      .then(article => res.status(200).send({ article }))
+      .catch(next);
+  } else return next({ msg: "please vote up or down" });
 }
 
 function getArticlesByTopicId(req, res, next) {
@@ -36,7 +35,7 @@ function getArticlesByTopic(req, res, next) {
         .populate("belongs_to", "title -_id")
         .populate("created_by", "username -_id");
     })
-    .then(article => res.send({ article }))
+    .then(articles => res.send({ articles }))
     .catch(err => {
       next({ status: 400 });
     });
@@ -44,7 +43,7 @@ function getArticlesByTopic(req, res, next) {
 
 module.exports = {
   getAllArticles,
-  changeVote,
+  addArticleVote,
   getArticlesByTopicId,
   getArticlesByTopic
 };

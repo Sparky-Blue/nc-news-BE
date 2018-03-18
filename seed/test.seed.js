@@ -15,7 +15,6 @@ function seedTestDatabase(DB_URL) {
   return mongoose
     .connect(DB_URL, { useMongoClient: true })
     .then(() => {
-      console.log(`Connected to ${DB_URL}`);
       return mongoose.connection.db.dropDatabase();
     })
     .then(() => {

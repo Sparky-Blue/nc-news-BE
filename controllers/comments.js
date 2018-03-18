@@ -1,4 +1,5 @@
 const { Comments, Users, Topics } = require("../models/models");
+const { changeVote } = require("./utils");
 
 function getCommentsForArticle(req, res, next) {
   return Comments.find({ belongs_to: req.params.article_id })
@@ -22,7 +23,7 @@ function addCommentToArticle(req, res, next) {
         return new Comments(newComment).save();
       })
       .then(comment => {
-        res.status(201).send(`comment added ${{ comment }}`);
+        res.status(201).send({ comment });
       })
       .catch(next);
   }
@@ -32,6 +33,15 @@ function deleteComment(req, res, next) {
   return Comments.deleteOne({ _id: req.params.comments_id })
     .then(deleteResult => res.send({ deleteResult }))
     .catch(next);
+}
+
+function addCommentVote(req, res, next) {
+  const { vote } = req.query;
+  if (vote === "up" || vote === "down") {
+    return changeVote(Comments, req.params.comments_id, vote)
+      .then(comment => res.status(200).send({ comment }))
+      .catch(next);
+  } else return next({ msg: "please vote up or down" });
 }
 
 function findCommentById(req, res, next) {
@@ -46,5 +56,6 @@ module.exports = {
   deleteComment,
   getCommentsForArticle,
   addCommentToArticle,
-  findCommentById
+  findCommentById,
+  addCommentVote
 };

@@ -26,6 +26,7 @@ describe("/api", () => {
   after(() => {
     return mongoose.disconnect();
   });
+
   describe("/topics", () => {
     it("GET returns status 200 and an object containing an array of all topics", () => {
       return request
@@ -49,31 +50,31 @@ describe("/api", () => {
             expect(res.body.articles.length).to.be.equal(2);
           });
       });
-      describe("/articles/:topic", () => {
-        it("GET returns a 200 status and an object containing an array of all articles matching topic", () => {
-          return request
-            .get(`/api/topics/articles/football`)
-            .expect(200)
-            .then(res => {
-              expect(res.body).to.be.an("object");
-              expect(res.body.articles).to.be.an("array");
-              expect(res.body.articles.length).to.be.equal(2);
-            });
-        });
-      });
     });
-
-    describe("/articles", () => {
-      it("GET returns 200 status and an object containing an array of articles", () => {
+    describe("/articles/:topic", () => {
+      it("GET returns a 200 status and an object containing an array of all articles matching topic", () => {
         return request
-          .get(`/api/articles`)
+          .get(`/api/topics/articles/coding`)
           .expect(200)
           .then(res => {
             expect(res.body).to.be.an("object");
             expect(res.body.articles).to.be.an("array");
-            expect(res.body.articles.length).to.be.equal(6);
+            expect(res.body.articles.length).to.be.equal(2);
           });
       });
+    });
+  });
+
+  describe("/articles", () => {
+    it("GET returns 200 status and an object containing an array of articles", () => {
+      return request
+        .get("/api/articles")
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an("object");
+          expect(res.body.articles).to.be.an("array");
+          expect(res.body.articles.length).to.be.equal(6);
+        });
     });
     describe("/articles/:article_id/comments", () => {
       it("GET returns 200 status and an object containing an array of comments", () => {
@@ -112,6 +113,7 @@ describe("/api", () => {
           })
           .catch(err => console.log({ err }));
       });
+
       it("PUT returns 200 status and increments the articles vote up or down by one", () => {
         return Articles.findById(articleIdsT[2])
           .then(article => {
@@ -157,6 +159,38 @@ describe("/api", () => {
           expect(res.body.deleteResult.ok).to.be.equal(1);
           expect(res.body.deleteResult.n).to.be.equal(1);
         });
+    });
+    it("PUT returns 200 status and increments the comments vote up or down by one", () => {
+      return Comments.findById(commentIdsT[2])
+        .then(comment => {
+          return request
+            .put(`/api/comments/${commentIdsT[2]}?vote=up`)
+            .expect(200)
+            .then(res => {
+              expect(res.body).to.be.an("object");
+              const updatedComment = Comments.findById(commentIdsT[2]);
+              return Promise.all([comment, updatedComment]);
+            })
+            .then(([comment, updatedComment]) => {
+              expect(updatedComment.votes).to.equal(comment.votes + 1);
+            });
+        })
+        .catch(err => console.log({ err }));
+      return Comments.findById(commentIdsT[4])
+        .then(comment => {
+          return request
+            .put(`/api/comments/${commentIdsT[4]}?vote=down`)
+            .expect(200)
+            .then(res => {
+              expect(res.body).to.be.an("object");
+              const updatedComment = Comments.findById(commentIdsT[4]);
+              return Promise.all([comment, updatedComment]);
+            });
+        })
+        .then(([comment, updatedComment]) => {
+          expect(updatedComment.votes).to.equal(comment.votes - 1);
+        })
+        .catch(err => console.log({ err }));
     });
   });
 
