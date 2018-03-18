@@ -5,6 +5,25 @@ function getAllArticles(req, res, next) {
   return Articles.find()
     .populate("belongs_to", "title -_id")
     .populate("created_by", "username -_id")
+    .then(articles => {
+      const promises = articles.map(article => {
+        return Comments.find({ belongs_to: article._id }).count();
+      });
+      return Promise.all([articles, ...promises]);
+    })
+    .then(([articles, ...counts]) => {
+      return articles.map((article, i) => {
+        return {
+          title: article.title,
+          body: article.body,
+          topic: article.belongs_to.title,
+          created_by: article.created_by.username,
+          votes: article.votes,
+          comments: counts[0],
+          _id: article._id
+        };
+      });
+    })
     .then(articles => res.send({ articles }))
     .catch(next);
 }
@@ -41,6 +60,7 @@ function getArticlesByTopic(req, res, next) {
     });
 }
 
+//articles with comments using pipeline
 function getArticlesWithCommentsTotal(req, res, next) {
   return Articles.aggregate([
     {
