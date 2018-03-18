@@ -17,7 +17,7 @@ function seedDatabase(DB_URL) {
   mongoose
     .connect(DB_URL)
     .then(() => {
-      console.log("Connected to mongoDB");
+      console.log(`Connected to ${DB_URL}`);
       return mongoose.connection.db.dropDatabase();
     })
     .catch(err => {

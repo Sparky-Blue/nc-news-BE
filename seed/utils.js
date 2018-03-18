@@ -67,16 +67,18 @@ function seedArticles(file, topicIds, userIds) {
   return Promise.all(articles).then(() => ids);
 }
 
-function seedComments(userIds, articleIds) {
+function seedComments(userIds, articleIds, num = 100) {
   const commentsArr = [];
   const ids = [];
-  for (let n = 100; n >= 0; n--) {
+  for (let n = 0; n < num; n++) {
     const randomUser = Math.floor(Math.random() * userIds.length);
     const randomArticle = Math.floor(Math.random() * articleIds.length);
+    const randomVotes = Math.floor(Math.random() * 100);
     const com = {
       body: generateComments(),
       created_by: userIds[randomUser].id,
-      belongs_to: articleIds[randomArticle]
+      belongs_to: articleIds[randomArticle],
+      votes: randomVotes
     };
     commentsArr.push(com);
   }

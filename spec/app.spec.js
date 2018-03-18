@@ -50,9 +50,17 @@ describe("/api", () => {
             expect(res.body.articles.length).to.be.equal(2);
           });
       });
+      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+        return request
+          .get(`/api/topics/123/articles`)
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("Invalid input");
+          });
+      });
     });
     describe("/articles/:topic", () => {
-      it("GET returns a 200 status and an object containing an array of all articles matching topic", () => {
+      it("GET returns a 200 statgetCommentsCountus and an object containing an array of all articles matching topic", () => {
         return request
           .get(`/api/topics/articles/coding`)
           .expect(200)
@@ -60,6 +68,14 @@ describe("/api", () => {
             expect(res.body).to.be.an("object");
             expect(res.body.articles).to.be.an("array");
             expect(res.body.articles.length).to.be.equal(2);
+          });
+      });
+      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+        return request
+          .get(`/api/topics/articles/hello`)
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("Invalid input");
           });
       });
     });
@@ -76,7 +92,7 @@ describe("/api", () => {
           expect(res.body.articles.length).to.be.equal(6);
         });
     });
-    describe("/articles/:article_id/comments", () => {
+    describe("/:article_id/comments", () => {
       it("GET returns 200 status and an object containing an array of comments", () => {
         return request
           .get(`/api/articles/${articleIdsT[1]}/comments`)
@@ -86,6 +102,14 @@ describe("/api", () => {
             expect(res.body.comments).to.be.an("array");
             expect(res.body.comments[0]).to.have.property("body");
             expect(res.body.comments[0].belongs_to).to.be.an("object");
+          });
+      });
+      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+        return request
+          .get(`/api/articles/123abc/comments`)
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("Invalid input");
           });
       });
       it("POST returns 201 status and adds a new comment", () => {
@@ -113,7 +137,26 @@ describe("/api", () => {
           })
           .catch(err => console.log({ err }));
       });
-
+      it("POST returns a 400 status and an error message if passed incorrect id", () => {
+        return request
+          .post(`/api/articles/cba321/comments?username=happyamy2016`)
+          .send({ comment: "Hello to Jason Isaacs" })
+          .set({ "Content-Type": "application/json" })
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("Invalid input");
+          });
+      });
+      it("POST returns a 400 status and an error message if passed no query", () => {
+        return request
+          .post(`/api/articles/${articleIdsT[0]}/comments`)
+          .send({ comment: "Hello to Jason Isaacs" })
+          .set({ "Content-Type": "application/json" })
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("please enter a valid username");
+          });
+      });
       it("PUT returns 200 status and increments the articles vote up or down by one", () => {
         return Articles.findById(articleIdsT[2])
           .then(article => {
@@ -146,6 +189,22 @@ describe("/api", () => {
           })
           .catch(err => console.log({ err }));
       });
+      it("PUT returns 400 status and an error message if passed an incorrect id", () => {
+        return request
+          .put(`/api/articles/123?vote=up`)
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("Invalid input");
+          });
+      });
+      it("PUT returns 400 status and an error message if passed an invalid query", () => {
+        return request
+          .put(`/api/articles/${articleIdsT[4]}?vote=1`)
+          .expect(400)
+          .then(res => {
+            expect(res.text).to.equal("please vote up or down");
+          });
+      });
     });
   });
 
@@ -158,6 +217,14 @@ describe("/api", () => {
           expect(res.body).to.be.an("object");
           expect(res.body.deleteResult.ok).to.be.equal(1);
           expect(res.body.deleteResult.n).to.be.equal(1);
+        });
+    });
+    it("DELETE returns status 400 and returns a message", () => {
+      return request
+        .delete(`/api/comments/${articleIdsT[2]}`)
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal("no comment found");
         });
     });
     it("PUT returns 200 status and increments the comments vote up or down by one", () => {
@@ -192,6 +259,22 @@ describe("/api", () => {
         })
         .catch(err => console.log({ err }));
     });
+    it("PUT returns 400 status and an error message if passed an incorrect id", () => {
+      return request
+        .put(`/api/comments/hello?vote=down`)
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal("Invalid input");
+        });
+    });
+    it("PUT returns 400 status and an error message if passed an invalid query", () => {
+      return request
+        .put(`/api/comments/${commentIdsT[4]}?vote=-1`)
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal("please vote up or down");
+        });
+    });
   });
 
   describe("/users", () => {
@@ -203,6 +286,14 @@ describe("/api", () => {
           expect(res.body).to.be.an("object");
           expect(res.body.user.username).to.be.equal("jessjelly");
           expect(res.body.user.name).to.be.equal("Jess Jelly");
+        });
+    });
+    it("GET returns a 400 status and an error message if passed incorrect id", () => {
+      return request
+        .get(`/api/topics/123/articles`)
+        .expect(400)
+        .then(res => {
+          expect(res.text).to.equal("Invalid input");
         });
     });
   });

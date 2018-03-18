@@ -35,7 +35,7 @@ function seedTestDatabase(DB_URL) {
         articleIds,
         userIds,
         topicIds,
-        seedComments(userIds, articleIds)
+        seedComments(userIds, articleIds, 20)
       ]);
     })
     .then(([articleIds, userIds, topicIds, commentIds]) => {
@@ -46,7 +46,5 @@ function seedTestDatabase(DB_URL) {
       console.log({ err });
     });
 }
-
-// seedTestDatabase(DB);
 
 module.exports = seedTestDatabase;

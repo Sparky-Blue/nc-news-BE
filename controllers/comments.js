@@ -25,13 +25,16 @@ function addCommentToArticle(req, res, next) {
       .then(comment => {
         res.status(201).send({ comment });
       })
-      .catch(next);
+      .catch(err => next({ status: 400 }));
   }
 }
 
 function deleteComment(req, res, next) {
   return Comments.deleteOne({ _id: req.params.comment_id })
-    .then(deleteResult => res.send({ deleteResult }))
+    .then(deleteResult => {
+      if (deleteResult.result.n === 0) res.status(400).send("no comment found");
+      else res.send({ deleteResult });
+    })
     .catch(next);
 }
 
@@ -49,6 +52,13 @@ function findCommentById(req, res, next) {
     .then(comment => {
       res.send({ comment });
     })
+    .catch(next);
+}
+
+function countCommentsforArticle() {
+  Comments.find({ belongs_to: req.params.article_id })
+    .count()
+    .then(count => res.send({ comments }))
     .catch(next);
 }
 

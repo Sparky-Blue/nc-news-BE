@@ -2,7 +2,7 @@ const { Topics, Articles, Comments, Users } = require("../models/models");
 const { changeVote } = require("./utils");
 
 function getAllArticles(req, res, next) {
-  Articles.find()
+  return Articles.find()
     .populate("belongs_to", "title -_id")
     .populate("created_by", "username -_id")
     .then(articles => res.send({ articles }))
@@ -41,9 +41,53 @@ function getArticlesByTopic(req, res, next) {
     });
 }
 
+function getArticlesWithCommentsTotal(req, res, next) {
+  return Articles.aggregate([
+    {
+      $lookup: {
+        from: "comments",
+        foreignField: "belongs_to",
+        localField: "_id",
+        as: "comments"
+      }
+    },
+    { $addFields: { comments: { $size: "$comments" } } },
+    {
+      $lookup: {
+        from: "users",
+        foreignField: "_id",
+        localField: "created_by",
+        as: "created_by"
+      }
+    },
+    {
+      $lookup: {
+        from: "topics",
+        foreignField: "_id",
+        localField: "belongs_to",
+        as: "belongs_to"
+      }
+    },
+
+    {
+      $addFields: {
+        created_by: { $arrayElemAt: ["$created_by.username", 0] }
+      }
+    },
+    {
+      $addFields: {
+        belongs_to: { $arrayElemAt: ["$belongs_to.title", 0] }
+      }
+    }
+  ])
+    .then(articles => res.send({ articles }))
+    .catch(next);
+}
+
 module.exports = {
   getAllArticles,
   addArticleVote,
   getArticlesByTopicId,
-  getArticlesByTopic
+  getArticlesByTopic,
+  getArticlesWithCommentsTotal
 };

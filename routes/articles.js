@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getAllArticles, addArticleVote } = require("../controllers/articles");
+const {
+  getAllArticles,
+  addArticleVote,
+  getArticlesWithCommentsTotal
+} = require("../controllers/articles");
 const {
   getCommentsForArticle,
   addCommentToArticle
@@ -14,5 +18,7 @@ router
   .post(addCommentToArticle);
 
 router.route("/:article_id").put(addArticleVote);
+
+router.route("/comments/:article_id").get(getArticlesWithCommentsTotal);
 
 module.exports = router;
