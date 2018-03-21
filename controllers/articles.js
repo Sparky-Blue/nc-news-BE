@@ -29,12 +29,13 @@ function getAllArticles(req, res, next) {
 }
 
 function addArticleVote(req, res, next) {
-  const { vote } = req.query;
-  if (vote === "up" || vote === "down") {
-    return changeVote(Articles, req.params.article_id, vote)
-      .then(article => res.status(200).send({ article }))
-      .catch(next);
-  } else return next({ msg: "please vote up or down" });
+  let { vote } = req.query;
+  if (vote !== "up" && vote !== "down") {
+    vote = 0;
+  }
+  return changeVote(Articles, req.params.article_id, vote)
+    .then(article => res.status(200).send({ article }))
+    .catch(next);
 }
 
 function getArticlesByTopicId(req, res, next) {

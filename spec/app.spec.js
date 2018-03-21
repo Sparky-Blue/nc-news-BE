@@ -197,12 +197,12 @@ describe("/api", () => {
             expect(res.text).to.equal("Invalid input");
           });
       });
-      it("PUT returns 400 status and an error message if passed an invalid query", () => {
+      it("PUT returns 200 status and the unchanged article when passed an invalid query", () => {
         return request
           .put(`/api/articles/${articleIdsT[4]}?vote=1`)
-          .expect(400)
+          .expect(200)
           .then(res => {
-            expect(res.text).to.equal("please vote up or down");
+            expect(res.body.article._id).to.equal(`${articleIdsT[4]}`);
           });
       });
     });
@@ -219,7 +219,7 @@ describe("/api", () => {
           expect(res.body.deleteResult.n).to.be.equal(1);
         });
     });
-    it("DELETE returns status 400 and returns a message", () => {
+    it("DELETE returns status 400 and returns a message if passed invalid id", () => {
       return request
         .delete(`/api/comments/${articleIdsT[2]}`)
         .expect(400)
@@ -267,12 +267,12 @@ describe("/api", () => {
           expect(res.text).to.equal("Invalid input");
         });
     });
-    it("PUT returns 400 status and an error message if passed an invalid query", () => {
+    it("PUT returns 200 status and an unchanged comment if passed an invalid query", () => {
       return request
         .put(`/api/comments/${commentIdsT[4]}?vote=-1`)
-        .expect(400)
+        .expect(200)
         .then(res => {
-          expect(res.text).to.equal("please vote up or down");
+          expect(res.body.comment._id).to.eql(`${commentIdsT[4]}`);
         });
     });
   });
