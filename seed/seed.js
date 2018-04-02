@@ -1,5 +1,5 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-const DB =
+const DB_URL =
   process.env.NODE_ENV === "production"
     ? process.env.DB_URL
     : require("../config/index").DB_URL[process.env.NODE_ENV];
@@ -11,13 +11,11 @@ const {
   seedUsers
 } = require("./utils");
 
-console.log(DB);
-
-function seedDatabase(DB_URL) {
+function seedDatabase(DB) {
   mongoose
-    .connect(DB_URL)
+    .connect(DB)
     .then(() => {
-      console.log(`Connected to ${DB_URL}`);
+      console.log(`Connected to ${DB}`);
       return mongoose.connection.db.dropDatabase();
     })
     .catch(err => {
@@ -51,4 +49,4 @@ function seedDatabase(DB_URL) {
     .catch(err => console.log({ err }));
 }
 
-seedDatabase(DB);
+seedDatabase(DB_URL);
