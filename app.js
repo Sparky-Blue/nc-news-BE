@@ -14,6 +14,15 @@ mongoose
   .then(() => console.log(`successfully connected to ${DB_URL}`))
   .catch(err => console.log("connection failed", err));
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 app.use(bodyParser.json());
 
 app.use("/api", apiRouter);
