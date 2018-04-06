@@ -19,7 +19,7 @@ function getAllArticles(req, res, next) {
           topic: article.belongs_to.title,
           created_by: article.created_by.username,
           votes: article.votes,
-          comments: counts[0],
+          comments: counts[i],
           _id: article._id
         };
       });
@@ -56,7 +56,7 @@ function getArticlesByTopicId(req, res, next) {
           topic: article.belongs_to.title,
           created_by: article.created_by.username,
           votes: article.votes,
-          comments: counts[0],
+          comments: counts[i],
           _id: article._id
         };
       });
@@ -88,7 +88,7 @@ function getArticlesByTopic(req, res, next) {
           topic: article.belongs_to.title,
           created_by: article.created_by.username,
           votes: article.votes,
-          comments: counts[0],
+          comments: counts[i],
           _id: article._id
         };
       });
