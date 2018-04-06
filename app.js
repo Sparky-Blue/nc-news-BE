@@ -2,6 +2,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+var cors = require("cors");
 const DB_URL =
   process.env.DB_URL || require("./config/index").DB_URL[process.env.NODE_ENV];
 const apiRouter = require("./routes/api");
