@@ -71,13 +71,7 @@ GET /api/topics
 Return all the articles for a certain topic:
 
 ```
-GET /api/topics/:topic_id/articles
-```
-
-or
-
-```
-GET /api/topics/:topic/articles
+GET /api/topics/articles/:topic
 ```
 
 Returns all the articles:
