@@ -95,7 +95,7 @@ function getArticlesByTopic(req, res, next) {
     })
     .then(articles => res.send({ articles }))
     .catch(err => {
-      next({ status: 400 });
+      next({ status: 404 });
     });
 }
 

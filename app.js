@@ -2,7 +2,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+<<<<<<< HEAD
 const cors = require("cors");
+=======
+var cors = require("cors");
+>>>>>>> 8f7f554cf17df9719eb91012ad6138cb40d160b1
 const DB_URL =
   process.env.DB_URL || require("./config/index").DB_URL[process.env.NODE_ENV];
 const apiRouter = require("./routes/api");
@@ -38,18 +42,18 @@ app.use("/*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err.name === "CastError" || err.name === "ValidationError")
+    return next({ status: 404 });
+  next(err);
+});
+
+app.use((err, req, res, next) => {
   if (err.status === 404) return res.status(404).send("Page not found");
   next(err);
 });
 
 app.use((err, req, res, next) => {
-  if (err.name === "CastError" || err.name === "ValidationError")
-    return next({ status: 400 });
-  next(err);
-});
-
-app.use((err, req, res, next) => {
-  if (err.msg) return res.status(400).send(err.msg);
+  if (err.msg) return res.status(404).send(err.msg);
   next(err);
 });
 
