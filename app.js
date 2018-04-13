@@ -2,11 +2,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-<<<<<<< HEAD
 const cors = require("cors");
-=======
-var cors = require("cors");
->>>>>>> 8f7f554cf17df9719eb91012ad6138cb40d160b1
 const DB_URL =
   process.env.DB_URL || require("./config/index").DB_URL[process.env.NODE_ENV];
 const apiRouter = require("./routes/api");
