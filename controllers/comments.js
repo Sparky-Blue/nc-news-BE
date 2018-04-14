@@ -10,23 +10,19 @@ function getCommentsForArticle(req, res, next) {
 }
 
 function addCommentToArticle(req, res, next) {
-  if (!req.query.username)
-    return next({ status: 400, msg: "please enter a valid username" });
-  else {
-    return Users.findOne({ username: req.query.username })
-      .then(user => {
-        const newComment = {
-          body: req.body.comment,
-          belongs_to: req.params.article_id,
-          created_by: user._id
-        };
-        return new Comments(newComment).save();
-      })
-      .then(comment => {
-        res.status(201).send({ comment });
-      })
-      .catch(err => next({ status: 400 }));
-  }
+  return Users.findOne({ username: req.query.username })
+    .then(user => {
+      const newComment = {
+        body: req.body.comment,
+        belongs_to: req.params.article_id,
+        created_by: user._id
+      };
+      return new Comments(newComment).save();
+    })
+    .then(comment => {
+      res.status(201).send({ comment });
+    })
+    .catch(err => next({ status: 404 }));
 }
 
 function deleteComment(req, res, next) {

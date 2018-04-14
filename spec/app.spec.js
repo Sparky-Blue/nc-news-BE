@@ -50,12 +50,12 @@ describe("/api", () => {
             expect(res.body.articles.length).to.be.equal(2);
           });
       });
-      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+      it("GET returns a 404 status and an error message if passed incorrect id", () => {
         return request
           .get(`/api/topics/123/articles`)
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("Invalid input");
+            expect(res.text).to.equal("Page not found");
           });
       });
     });
@@ -70,12 +70,12 @@ describe("/api", () => {
             expect(res.body.articles.length).to.be.equal(2);
           });
       });
-      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+      it("GET returns a 404 status and an error message if passed incorrect id", () => {
         return request
           .get(`/api/topics/articles/hello`)
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("Invalid input");
+            expect(res.text).to.equal("Page not found");
           });
       });
     });
@@ -104,12 +104,12 @@ describe("/api", () => {
             expect(res.body.comments[0].belongs_to).to.be.an("object");
           });
       });
-      it("GET returns a 400 status and an error message if passed incorrect id", () => {
+      it("GET returns a 404 status and an error message if passed incorrect id", () => {
         return request
           .get(`/api/articles/123abc/comments`)
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("Invalid input");
+            expect(res.text).to.equal("Page not found");
           });
       });
       it("POST returns 201 status and adds a new comment", () => {
@@ -137,24 +137,24 @@ describe("/api", () => {
           })
           .catch(err => console.log({ err }));
       });
-      it("POST returns a 400 status and an error message if passed incorrect id", () => {
+      it("POST returns a 404 status and an error message if passed incorrect id", () => {
         return request
           .post(`/api/articles/cba321/comments?username=happyamy2016`)
           .send({ comment: "Hello to Jason Isaacs" })
           .set({ "Content-Type": "application/json" })
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("Invalid input");
+            expect(res.text).to.equal("Page not found");
           });
       });
-      it("POST returns a 400 status and an error message if passed no query", () => {
+      it("POST returns a 404 status and an error message if passed an invalid query", () => {
         return request
           .post(`/api/articles/${articleIdsT[0]}/comments`)
           .send({ comment: "Hello to Jason Isaacs" })
           .set({ "Content-Type": "application/json" })
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("please enter a valid username");
+            expect(res.text).to.equal("Page not found");
           });
       });
       it("PUT returns 200 status and increments the articles vote up or down by one", () => {
@@ -189,12 +189,12 @@ describe("/api", () => {
           })
           .catch(err => console.log({ err }));
       });
-      it("PUT returns 400 status and an error message if passed an incorrect id", () => {
+      it("PUT returns 404 status and an error message if passed an incorrect id", () => {
         return request
           .put(`/api/articles/123?vote=up`)
-          .expect(400)
+          .expect(404)
           .then(res => {
-            expect(res.text).to.equal("Invalid input");
+            expect(res.text).to.equal("Page not found");
           });
       });
       it("PUT returns 200 status and the unchanged article when passed an invalid query", () => {
@@ -259,12 +259,12 @@ describe("/api", () => {
         })
         .catch(err => console.log({ err }));
     });
-    it("PUT returns 400 status and an error message if passed an incorrect id", () => {
+    it("PUT returns 404 status and an error message if passed an incorrect id", () => {
       return request
         .put(`/api/comments/hello?vote=down`)
-        .expect(400)
+        .expect(404)
         .then(res => {
-          expect(res.text).to.equal("Invalid input");
+          expect(res.text).to.equal("Page not found");
         });
     });
     it("PUT returns 200 status and an unchanged comment if passed an invalid query", () => {
@@ -288,12 +288,12 @@ describe("/api", () => {
           expect(res.body.user.name).to.be.equal("Jess Jelly");
         });
     });
-    it("GET returns a 400 status and an error message if passed incorrect id", () => {
+    it("GET returns a 404 status and an error message if passed incorrect id", () => {
       return request
         .get(`/api/topics/123/articles`)
-        .expect(400)
+        .expect(404)
         .then(res => {
-          expect(res.text).to.equal("Invalid input");
+          expect(res.text).to.equal("Page not found");
         });
     });
   });
